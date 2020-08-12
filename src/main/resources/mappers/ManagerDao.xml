@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.neuedu.air_plane.dao.ManagerDao">
+    <!--sql标签用于抽象公用sql，引用时使用include标签指定refid来引入sql片段-->
+    <sql id="selectSql">
+        select
+            man_autoid manAutoId,
+            man_account manAccount,
+            man_pwd manPwd,
+            man_id manId,
+            man_sex manSex,
+            man_telnumber manTelNumber,
+            man_email manEmail,
+            man_time manTime
+        from manager
+    </sql>
+
+    <select id="find" resultType="com.neuedu.air_plane.model.Manager">
+        <include refid="selectSql"></include>
+        <where>
+            <if test="manAccount!=null and manAccount!=''">
+                and man_account = #{manAccount}
+            </if>
+            <if test="manPwd!=null and manPwd!=''">
+                and man_pwd = #{manPwd}
+            </if>
+            and flag=0
+        </where>
+    </select>
+
+    <insert id="insert">
+        insert into manager (
+            man_account,
+            man_pwd,
+            man_id,
+            man_sex,
+            man_telnumber,
+            man_email,
+            man_time,
+            flag
+        ) values (
+            #{manAccount},
+            #{manPwd},
+            #{manId},
+            #{manSex},
+            #{manTelNumber},
+            #{manEmail},
+            #{manTime},
+            0
+        )
+    </insert>
+
+    <select id="findList" resultType="com.neuedu.air_plane.model.Manager">
+        <include refid="selectSql"></include>
+        <where>
+            <if test="manAccount!=null and manAccount!=''">
+                and man_account = #{manAccount}
+            </if>
+            and flag=0
+        </where>
+    </select>
+
+    <delete id="deleteById">
+        update manager
+        set flag=1 where man_autoid=#{id}
+    </delete>
+
+    <update id="update">
+        update manager
+        <set>
+            <if test="manAccount!=null and manAccount!=''">
+                man_account = #{manAccount},
+            </if>
+            <if test="manPwd!=null and manPwd!=''">
+                man_pwd = #{manPwd},
+            </if>
+            <if test="manId!=null and manId!=''">
+                man_id = #{manId},
+            </if>
+            <if test="manTelNumber!=null and manTelNumber!=''">
+                man_telnumber = #{manTelNumber},
+            </if>
+            <if test="manEmail!=null and manEmail!=''">
+                man_email = #{manEmail},
+            </if>
+            <if test="manTime!=null">
+                man_time = #{manTime},
+            </if>
+        </set>
+        where man_autoid=#{manAutoId}
+    </update>
+</mapper>
